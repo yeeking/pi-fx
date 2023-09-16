@@ -19,7 +19,9 @@ int main()
 {
 
     FBScreen screen;
-    
+    Color color = screen.rgb_to_16bit(0, 0, 0);
+    screen.fillBackground(color);
+        
     int input;
     // fire up the dial
     int dialDev = open("/dev/input/by-id/usb-Griffin_Technology__Inc._Griffin_PowerMate-event-if00", O_RDONLY);
@@ -40,7 +42,8 @@ int main()
             break;
         }
         Color color = screen.rgb_to_16bit(col, 0, 0);
-        screen.fillBackground(color);
+        //screen.fillBackground(color);
+        screen.drawCircle(50, 50, 25, color);
     }
 
     return 0;
