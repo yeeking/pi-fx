@@ -43,7 +43,8 @@ int main()
         }
         Color color = screen.rgb_to_16bit(col, 0, 0);
         //screen.fillBackground(color);
-        screen.drawCircle(50, 50, 25, color);
+        // screen.drawCircle(50, 50, 25, color);
+        screen.drawCircleOutline(160, 120, 100, color, 15);
     }
 
     return 0;

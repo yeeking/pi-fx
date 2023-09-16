@@ -90,31 +90,42 @@ public:
         }
     }
 
+    void drawCircle(int centerX, int centerY, int diameter, Color color)
+    {
+        int radius = diameter / 2;
+        long int location = 0;
+        int x = 0, y = 0;
 
-void drawCircle(int centerX, int centerY, int diameter, Color color) {
-    int radius = diameter / 2;
-    long int location = 0;
-    int x = 0, y = 0;
+        // Iterate over the bounding square of the circle
+        for (y = centerY - radius; y < centerY + radius; y++)
+        {
+            for (x = centerX - radius; x < centerX + radius; x++)
+            {
+                int dx = x - centerX;
+                int dy = y - centerY;
+                // Check if the pixel is inside the circle
+                if (dx * dx + dy * dy <= radius * radius)
+                {
+                    location = (x + vinfo.xoffset) * (vinfo.bits_per_pixel / 8) +
+                               (y + vinfo.yoffset) * finfo.line_length;
 
-    // Iterate over the bounding square of the circle
-    for (y = centerY - radius; y < centerY + radius; y++) {
-        for (x = centerX - radius; x < centerX + radius; x++) {
-            int dx = x - centerX;
-            int dy = y - centerY;
-            // Check if the pixel is inside the circle
-            if (dx * dx + dy * dy <= radius * radius) {
-                location = (x + vinfo.xoffset) * (vinfo.bits_per_pixel / 8) +
-                           (y + vinfo.yoffset) * finfo.line_length;
-
-                if (vinfo.bits_per_pixel == 16) {
-                    *((unsigned short int *)(fbp + location)) = color;
+                    if (vinfo.bits_per_pixel == 16)
+                    {
+                        *((unsigned short int *)(fbp + location)) = color;
+                    }
+                    // Add cases for other color depths if necessary.
                 }
-                // Add cases for other color depths if necessary.
             }
         }
     }
-}
 
+    void drawCircleOutline(int centerX, int centerY, int diameter, Color color, int thickness)
+    {
+        Color black = rgb_to_16bit(0, 0, 0);
+        drawCircle(centerX, centerY, diameter, color);
+        drawCircle(centerX, centerY, diameter-thickness, black);
+
+    }
 
 private:
     struct fb_var_screeninfo vinfo;
