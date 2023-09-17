@@ -67,9 +67,9 @@ DialEvent getDialEvent(int file_ref)
         // .value tells you key up, down, hold
         // 1 and 2 are key down or held events
         // if (ev[code_id].value == 1 || ev[code_id].value == 2)
-        printf("KeyUtisl:: %i %i \n", key_code, ev[code_id].value);
+        printf("KeyUtisl:: key_code %i code_id val %i \n", key_code, ev[code_id].value);
 
-        if (key_code == 7)
+        if (key_code == 7)// dial was spun
         { // spin
             if (ev[code_id].value < 0)
             {
@@ -86,7 +86,7 @@ DialEvent getDialEvent(int file_ref)
                 return event;
             }
         }
-        if (key_code == 256)
+        if (key_code == 256) // dial was clicked
         { // click
             if (ev[code_id].value == 1)
             {

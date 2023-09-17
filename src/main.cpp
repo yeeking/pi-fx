@@ -39,6 +39,9 @@ int main()
     int input;
     // fire up the dial
     int dialDev = open("/dev/input/by-id/usb-Griffin_Technology__Inc._Griffin_PowerMate-event-if00", O_RDONLY);
+    // starter code for receiving data from wiomouse device
+    // int dialDev = open("/dev/input/by-id/usb-Seeed_Studio_Seeed_Wio_Terminal_F3D9BE68533346484E202020FF154240-if02-event-mouse", O_RDONLY);
+    
     while (1)
     {
         DialEvent dialEvent = getDialEvent(dialDev);
