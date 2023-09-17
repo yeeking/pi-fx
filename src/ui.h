@@ -33,7 +33,9 @@ class Knob {
         screen->drawLine(x, y, value%360, diameter/2, color);
         screen->drawText(x-diameter/2, y+diameter/2+10, std::to_string(value), color);
     }
-
+    int getValue(){
+        return this->value; 
+    }
 
     private:
     // FBScreen* screen;

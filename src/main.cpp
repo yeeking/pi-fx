@@ -6,9 +6,12 @@
 #include "dial.h"
 #include "ui.h"
 #include "SimpleClock.h"
+#include "osc.h"
 
 int main()
 {
+
+    OSCClient oscClient(57110);
 
     FBScreen screen;
     Color black = screen.rgb_to_16bit(0, 0, 0);
@@ -59,6 +62,9 @@ int main()
             //col = 0;
             break;
         }
+        oscClient.setBus(1, knobs[0]->getValue());
+        oscClient.setBus(2, knobs[1]->getValue());
+
    }
 
     return 0;
