@@ -1,5 +1,15 @@
 #pragma once
 #include <linux/fb.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <stdio.h>
+#include <fcntl.h>
+#include <linux/fb.h>
+#include <sys/mman.h>
+#include <sys/ioctl.h>
+#include <linux/input.h>
+#include <iostream>
+#include <cmath>
 
 typedef unsigned short int Color;
 
@@ -123,8 +133,49 @@ public:
     {
         Color black = rgb_to_16bit(0, 0, 0);
         drawCircle(centerX, centerY, diameter, color);
-        drawCircle(centerX, centerY, diameter-thickness, black);
+        drawCircle(centerX, centerY, diameter - thickness, black);
+    }
+    void drawLine(int startX, int startY, int angle, int length, Color col)
+    {
+        int endX = startX + length * cos(angle * M_PI / 180.0);
+        int endY = startY + length * sin(angle * M_PI / 180.0);
 
+        int dx = abs(endX - startX);
+        int dy = abs(endY - startY);
+
+        int sx = (startX < endX) ? 1 : -1;
+        int sy = (startY < endY) ? 1 : -1;
+
+        int err = dx - dy;
+
+        while (true)
+        {
+            long int location = (startX + vinfo.xoffset) * (vinfo.bits_per_pixel / 8) +
+                                (startY + vinfo.yoffset) * finfo.line_length;
+
+            if (vinfo.bits_per_pixel == 16)
+            {
+                *((unsigned short int *)(fbp + location)) = col;
+            }
+            // Add cases for other color depths if necessary.
+
+            if (startX == endX && startY == endY)
+            {
+                break;
+            }
+
+            int e2 = 2 * err;
+            if (e2 > -dy)
+            {
+                err -= dy;
+                startX += sx;
+            }
+            if (e2 < dx)
+            {
+                err += dx;
+                startY += sy;
+            }
+        }
     }
 
 private:

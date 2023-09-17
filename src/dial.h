@@ -1,3 +1,16 @@
+
+#pragma once
+#include <linux/fb.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <stdio.h>
+#include <fcntl.h>
+#include <linux/fb.h>
+#include <sys/mman.h>
+#include <sys/ioctl.h>
+#include <linux/input.h>
+#include <iostream>
+
 struct input_event ev[64];
 
 int ticks = 0;
