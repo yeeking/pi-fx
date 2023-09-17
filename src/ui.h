@@ -3,8 +3,10 @@
 #include <iostream>
 #include "screen.h"
 
+
 class Knob {
     public:
+
     Knob(int x, int y, int diameter, Color color, int max=1000, std::function<void(int)>callback = [](int val){
                     std::cout << "Knob::default knob callback" << val << std::endl;
                 }) 
@@ -26,14 +28,15 @@ class Knob {
         }
         callback(value);
     }
-    void draw(FBScreen& screen){
-        screen.drawCircleOutline(x, y, diameter, color, diameter/10);
-        screen.drawLine(x, y, value%360, diameter/2, color);
-        std::cout << "Knob::draw" << value << std::endl;
+    void draw(FBScreen* screen){
+        screen->drawCircleOutline(x, y, diameter, color, diameter/10);
+        screen->drawLine(x, y, value%360, diameter/2, color);
+        screen->drawText(x-diameter/2, y+diameter/2+10, std::to_string(value), color);
     }
 
 
     private:
+    // FBScreen* screen;
     int x;
     int y;
     int diameter;
@@ -42,4 +45,29 @@ class Knob {
     std::function<void(int)>callback;
     int value; 
     
+};
+class UI{
+    public:
+    UI(FBScreen* screen) : screen {screen}{
+
+    }
+
+    void addComponent(Knob* knob){
+        this->uiComps.push_back(knob);
+    }
+    void updateScreen(){
+        Color black = screen->rgb_to_16bit(0, 0, 0);
+        Color white = screen->rgb_to_16bit(255, 255, 255);
+        
+        screen->fillBackground(black);
+        for (Knob* knob : uiComps){
+            knob->draw(screen);
+        }
+        screen->drawText(25, 25, "0123456789", white);
+    }
+
+    private:
+        FBScreen* screen;
+        std::vector<Knob*> uiComps; 
+
 };

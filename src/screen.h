@@ -10,8 +10,10 @@
 #include <linux/input.h>
 #include <iostream>
 #include <cmath>
-
+#include <vector> 
+#include "letters.h"
 typedef unsigned short int Color;
+
 
 class FBScreen
 {
@@ -178,10 +180,48 @@ public:
         }
     }
 
+
+
+
+void drawChar(int x, int y, char c, Color col) {
+    if ((c < 'A' || c > 'Z') && (c < '0' || c > '9')) return; 
+
+    const unsigned short *bitmap;
+    if (c >= 'A' && c <= 'Z') {
+        bitmap = CHAR_LOOKUP[c - 'A'];
+    } else {
+        bitmap = CHAR_LOOKUP[c - '0' + 26];  // Assuming numbers come after letters in the lookup
+    }
+
+    for (int cy = 0; cy < CHAR_HEIGHT; cy++) {
+        for (int cx = 0; cx < CHAR_WIDTH; cx++) {
+            if (bitmap[cy] & (0b1000000000000000 >> cx)) {  // Check each bit in the 2-byte integer
+                long int location = (x + cx + vinfo.xoffset) * (vinfo.bits_per_pixel / 8) +
+                                    (y + cy + vinfo.yoffset) * finfo.line_length;
+                if (vinfo.bits_per_pixel == 16) {
+                    *((unsigned short int *)(fbp + location)) = col;
+                }
+            }
+        }
+    }
+}
+
+
+
+void drawText(int x, int y, const std::string &text, Color col) {
+    for (size_t i = 0; i < text.size(); i++) {
+        drawChar(x + i * CHAR_WIDTH, y, text[i], col);
+    }
+}
+
+
 private:
     struct fb_var_screeninfo vinfo;
     struct fb_fix_screeninfo finfo;
     char *fbp;
     int fbfd;
     long int screensize;
+
+    // Color FONT_BITMAP[26][CHAR_WIDTH][CHAR_HEIGHT];  // This would contain the actual bitmaps for 'A' to 'Z'.
+
 };
